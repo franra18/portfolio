@@ -1,10 +1,11 @@
 ---
 const clothes = [['Chaqueta', '#2c3e57'], ['Pantalón', '#7a6a4e'], ['Jersey', '#6d2f2a'], ['Camisa', '#3d4a3a']];
 ---
-<div class="flex aspect-[9/18.5] w-[min(200px,60%)] flex-col gap-3.5 rounded-[36px] border-[10px] border-[#2c2c2c] bg-paper px-4 py-[22px] text-[13px] text-[#111]">
+<!-- wider on phones: at 60% of a narrow column the labels pushed the grid out of the frame -->
+<div class="flex aspect-[9/18.5] w-[min(240px,85%)] flex-col gap-3.5 rounded-[36px] border-[10px] border-[#2c2c2c] bg-paper px-4 py-[22px] text-[13px] text-[#111] lg:w-[min(200px,60%)]">
   <strong class="text-[18px]">Mi armario</strong>
-  <div class="grid flex-1 grid-cols-[1fr_1fr] gap-2">
-    {clothes.map(([name, bg]) => <div class="flex items-end rounded-lg p-2 font-semibold text-pure" style={`background:${bg}`}>{name}</div>)}
+  <div class="grid flex-1 grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2">
+    {clothes.map(([name, bg]) => <div class="flex items-end rounded-lg p-2 font-semibold text-pure max-sm:text-[12px]" style={`background:${bg}`}>{name}</div>)}
   </div>
   <div class="rounded-lg bg-[#111] px-3 py-2.5 text-pure">Gemini: «Para 18 °C, chaqueta azul con pantalón beige.»</div>
 </div>
