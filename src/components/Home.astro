@@ -2,6 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import Header from './Header.astro';
 import Hero from './Hero.astro';
+import Experience from './Experience.astro';
+import Projects from './Projects.astro';
+import About from './About.astro';
+import Contact from './Contact.astro';
 import type { Lang } from '../i18n/ui';
 
 interface Props { lang: Lang }
@@ -11,5 +15,9 @@ const { lang } = Astro.props;
   <Header lang={lang} />
   <main class="overflow-x-clip reveal:isolate">
     <Hero lang={lang} />
+    <Experience lang={lang} />
+    <Projects lang={lang} />
+    <About lang={lang} />
+    <Contact lang={lang} />
   </main>
 </Layout>

@@ -1,0 +1,45 @@
+---
+import { ui, asset, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const email = 'franciscoramirezcanadas@gmail.com';
+const link = 'font-semibold decoration-2 underline-offset-[5px] transition-colors duration-200 hover:text-accent';
+const social = [
+  [`mailto:${email}`, email],
+  ['https://www.linkedin.com/in/francisco-ramirez-canadas/', 'LinkedIn ↗'],
+  ['https://github.com/franra18', 'GitHub ↗'],
+];
+---
+<!-- anchor sits outside the sticky footer, whose stuck position would make #contacto a no-op scroll -->
+<div id="contacto"></div>
+<!-- one closing screen the page lifts off like a blind -->
+<footer class="wrap f-white flex min-h-svh flex-col pt-24 lg:pt-[clamp(88px,13vh,160px)] reveal:sticky reveal:bottom-0 reveal:-z-1" aria-labelledby="h-contact">
+  <div class="grid flex-1 grid-cols-[1fr] content-center items-start gap-x-m gap-y-12 pb-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-y-m">
+    <div>
+      <h2 id="h-contact" class="text-[clamp(3.25rem,1.5rem+7.5vw,10rem)] leading-[.88]">{t['contact.h']}</h2>
+      <p class="mt-[clamp(20px,4vh,40px)] max-w-[34ch] text-lead text-soft">{t['contact.sub']}</p>
+      <a class="group mt-5 inline-flex items-center gap-3.5 text-title font-semibold tracking-[-0.02em] no-underline" href={`mailto:${email}?subject=${encodeURIComponent(t.mailSubject)}`}>
+        <span>{t['hero.alt']}</span>
+        <span class="grid size-[1.6em] place-items-center rounded-full bg-accent text-pure transition-transform duration-250 ease-soft group-hover:translate-x-1.5" aria-hidden="true"><svg class="size-[46%] fill-none stroke-current stroke-[2.2] [stroke-linecap:round] [stroke-linejoin:round]" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+    </div>
+    <div>
+      <div class="flex items-center gap-[18px]">
+        <img class="size-18 rounded-full object-cover object-[62%_30%]" src={asset('img/foto-perfil.webp')} width="72" height="72" alt="" loading="lazy">
+        <p><strong class="block">Francisco Ramírez</strong><span class="block text-soft">{t['contact.role']}</span></p>
+      </div>
+      <ul class="mt-7 grid gap-2.5 font-semibold">
+        {social.map(([href, label]) => (
+          <li><a class="no-underline transition-colors duration-200 [overflow-wrap:anywhere] hover:text-accent" href={href} {...(href.startsWith('http') && { target: '_blank', rel: 'noopener noreferrer' })}>{label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <p class="mt-auto flex flex-wrap justify-between gap-4 py-6 text-small text-soft">
+    <span>© 2026 Francisco Ramírez Cañadas</span>
+    <a class:list={[link, 'cv']} href={asset(t.cv)} target="_blank" rel="noopener">{t['hero.cta']}</a>
+    <a class={link} href="#inicio">{t['foot.up']}</a>
+  </p>
+</footer>

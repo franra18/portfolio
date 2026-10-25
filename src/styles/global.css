@@ -52,7 +52,9 @@
 /* where a stuck project card fits on screen; otherwise its bottom would be covered before it is seen */
 @custom-variant stack (@media (min-width: 901px) and (min-height: 560px));
 /* where the contact footer fits on screen; a taller one would hide its top behind the page */
-@custom-variant reveal (@media (min-width: 901px) and (min-height: 540px), (min-height: 720px));
+@custom-variant reveal {
+  @media (min-width: 901px) and (min-height: 540px), (min-height: 720px) { @slot; }
+}
 
 @layer base {
   h2 { font-size: var(--text-head); font-weight: 700; line-height: .95; letter-spacing: -0.03em; }

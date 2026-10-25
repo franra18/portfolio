@@ -1,0 +1,83 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import { jobs } from '../data/experience';
+import NttLogo from './logos/NttLogo.astro';
+import UmaLogo from './logos/UmaLogo.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const logos = { ntt: NttLogo, uma: UmaLogo };
+const chip = 'chip flex-none rounded-full px-3 py-1 text-small whitespace-nowrap no-underline';
+---
+<section class="wrap f-white pt-[120px] pb-20 lg:pt-40 lg:pb-[120px]" id="experiencia" aria-labelledby="h-exp">
+  <div class="mb-6 flex flex-wrap items-end justify-between gap-6">
+    <h2 id="h-exp" class="rise">{t['exp.h']}</h2>
+  </div>
+  {jobs.map((job) => {
+    const Logo = logos[job.logo];
+    return (
+      <article class="job grid grid-cols-[1fr] gap-x-m gap-y-6 py-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:py-16">
+        <figure class="m-0 flex justify-start self-start lg:sticky lg:top-[120px] lg:justify-end" style={`--logo-w: ${job.logoWidth}`}><Logo /></figure>
+        <div class="job-body">
+          <h3 class="text-lead font-semibold">{t[job.title]}</h3>
+          <p class="meta mt-1.5 text-soft">{job.meta.map((k) => t[k]).join(' · ')}</p>
+          <ul class="mt-4">
+            {job.items.map(({ text, chip: c }) => (
+              <li class="flex items-baseline justify-between gap-6 py-3 max-sm:flex-col max-sm:items-start max-sm:gap-2">
+                <span>{t[text]}</span>
+                {typeof c === 'string' ? <span class:list={[chip, 'bg-stone']}>{c}</span>
+                  : 'href' in c ? <a class:list={[chip, 'bg-black text-paper transition-colors duration-200 hover:bg-accent hover:text-pure']} href={c.href}>{t[c.key]}</a>
+                  : <span class:list={[chip, 'bg-stone']}>{t[c.key]}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </article>
+    );
+  })}
+</section>
+
+<script>
+  const jobs = document.querySelectorAll<HTMLElement>('.job');
+
+  // Each logo traces itself, then its details slide in one after another.
+  jobs.forEach((job) => {
+    const paths = [...job.querySelectorAll<SVGPathElement>('.logo-svg path')];
+    const step = Math.min(70, 900 / paths.length);
+    paths.forEach((p, i) => { p.style.setProperty('--len', String(Math.ceil(p.getTotalLength()))); p.style.setProperty('--d', Math.round(i * step) + 'ms'); });
+    job.querySelectorAll<HTMLElement>('.job-body > h3, .job-body > .meta, li').forEach((el, i) => el.style.setProperty('--t', 500 + i * 110 + 'ms'));
+  });
+  const jobIn = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (en.isIntersecting) { en.target.classList.add('in'); jobIn.unobserve(en.target); }
+  }), { threshold: 0.25 });
+
+  // The job crossing the middle of the screen shows its logo in full colour.
+  const jobIO = new IntersectionObserver((entries) => entries.forEach((en) => en.target.classList.toggle('active', en.isIntersecting)), { rootMargin: '-45% 0px -45% 0px' });
+  jobs.forEach((j) => { jobIn.observe(j); jobIO.observe(j); });
+</script>
+
+<style is:global>
+  /* one row per place, its logo held beside the details while you read them */
+  .logo-svg { display: block; width: var(--logo-w); height: auto; overflow: visible; filter: grayscale(1); opacity: .35; transition: filter .6s, opacity .6s; }
+  .job.active .logo-svg { filter: none; opacity: 1; }
+  .logo-svg.ntt path { stroke: #0072bc; stroke-width: 1.4; }
+  .logo-svg.uma path { stroke: #1c2f5c; stroke-width: 2.6; }
+  @media (width < 901px) { .logo-svg { width: calc(var(--logo-w) * .7); filter: none; opacity: 1; } }
+
+  /* outline traces first (--len and --d set by JS), then the fill floods in and the outline fades */
+  .logo-svg path { stroke-opacity: 0; }
+  /* transitions only exist once the job is in: otherwise setting --len on load would animate the logo away before anyone sees it */
+  .job.in .logo-svg path { transition: stroke-dashoffset 1.4s var(--ease-soft) var(--d, 0ms), fill-opacity .7s ease calc(var(--d, 0ms) + 1000ms), stroke-opacity .5s ease calc(var(--d, 0ms) + 1400ms); }
+  .js .job:not(.in) .logo-svg path { stroke-opacity: 1; fill-opacity: 0; stroke-dasharray: var(--len); stroke-dashoffset: var(--len); }
+  .js .job.in .logo-svg path { stroke-dasharray: var(--len); }
+  .job.in .job-body > *, .job.in li { transition: opacity .6s var(--ease-soft) var(--t, 0ms), transform .6s var(--ease-soft) var(--t, 0ms); }
+  .js .job:not(.in) .job-body > h3, .js .job:not(.in) .job-body > .meta, .js .job:not(.in) li { opacity: 0; transform: translateX(28px); }
+  .job.in .chip { transition: scale .45s cubic-bezier(.34, 1.56, .64, 1) calc(var(--t, 0ms) + 250ms), opacity .3s calc(var(--t, 0ms) + 250ms); }
+  .js .job:not(.in) .chip { scale: .4; opacity: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .js .job:not(.in) .logo-svg path { stroke-opacity: 0; fill-opacity: 1; stroke-dashoffset: 0; }
+    .js .job:not(.in) .job-body > h3, .js .job:not(.in) .job-body > .meta, .js .job:not(.in) li, .js .job:not(.in) .chip { opacity: 1; transform: none; scale: 1; }
+  }
+</style>

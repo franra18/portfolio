@@ -1,0 +1,10 @@
+---
+const places = [['Mercado de Atarazanas', '4,5'], ['Librería del centro', '4,0'], ['Chiringuito El Palo', '5,0']];
+---
+<div class="grid w-[min(440px,100%)] gap-4 rounded-[14px] bg-stone p-6 text-[#111]">
+  <header class="flex items-baseline justify-between"><strong class="text-[20px]">ReViews</strong><span>Málaga</span></header>
+  <ul class="grid gap-2">
+    {places.map(([name, score]) => <li class="flex justify-between rounded-lg bg-pure px-3.5 py-3"><span>{name}</span><b>{score}</b></li>)}
+  </ul>
+  <p class="text-[13px] text-muted">Vue 3 · Leaflet · Google Sign-In</p>
+</div>

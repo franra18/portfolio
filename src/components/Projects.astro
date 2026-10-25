@@ -1,0 +1,97 @@
+---
+import { ui, type Lang } from '../i18n/ui';
+import { projects } from '../data/projects';
+import ClipSyncMock from './mocks/ClipSyncMock.astro';
+import TerminalMock from './mocks/TerminalMock.astro';
+import PhoneMock from './mocks/PhoneMock.astro';
+import ReviewsMock from './mocks/ReviewsMock.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const mocks = { clipsync: ClipSyncMock, terminal: TerminalMock, phone: PhoneMock, reviews: ReviewsMock };
+---
+<div id="proyectos" class="stack wrap f-stone pb-[120px]">
+  <div class="flex flex-wrap items-end justify-between gap-6 pt-[120px] pb-16 lg:pt-40">
+    <h2 class="rise">{t['proj.h']}</h2>
+  </div>
+
+  {projects.map((p) => {
+    const Mock = mocks[p.mock];
+    return (
+      <article class:list={['project', `f-${p.field}`]} id={p.id}>
+        <div class="contents">
+          <h3 class="rise [grid-area:title] self-center overflow-hidden text-title leading-[.95] font-bold tracking-[-0.03em] text-ellipsis lg:whitespace-nowrap">{p.titleKey ? t[p.titleKey] : p.title}</h3>
+          <p class="rise mt-5 [grid-area:tags] font-medium" style="--i:1">{p.tags}</p>
+          <p class="rise mt-5 max-w-[44ch] [grid-area:desc]" style="--i:2">{t[p.desc]}</p>
+          <p class="links rise mt-6 flex flex-wrap gap-x-7 gap-y-3 self-center justify-self-start [grid-area:links] lg:mt-0 lg:justify-self-end" style="--i:3">
+            <a class:list={[
+              'inline-flex min-h-11 items-center rounded-full border-2 border-current px-5 font-semibold no-underline transition-colors duration-200',
+              p.field === 'dark' ? 'hover:bg-paper hover:text-black' : 'hover:bg-black hover:text-paper',
+            ]} href={p.repo} target="_blank" rel="noopener noreferrer">{t['lnk.code']}</a>
+          </p>
+        </div>
+        <div class="ui rise mt-7 grid min-w-0 place-items-center self-center [grid-area:ui] stack:min-h-0 stack:overflow-hidden stack:[place-items:start_center]" style="--i:2">
+          <Mock />
+        </div>
+      </article>
+    );
+  })}
+</div>
+
+<script>
+  const STACK = '(min-width: 901px) and (min-height: 560px)';
+  const cards = [...document.querySelectorAll<HTMLElement>('.project')];
+
+  // A stacked card shrinks as the next one covers it.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const stackMQ = matchMedia(STACK);
+    let pending = false;
+    const frame = () => {
+      pending = false;
+      cards.forEach((card, i) => {
+        const next = cards[i + 1];
+        if (!stackMQ.matches || !next) { card.style.scale = ''; return; }
+        // 0 while the next card is a screen away, 1 once it has slid fully over this one
+        const p = Math.min(Math.max(1 - (next.getBoundingClientRect().top - card.getBoundingClientRect().top) / innerHeight, 0), 1);
+        card.style.scale = (1 - p * 0.05).toFixed(4);
+      });
+    };
+    const queue = () => { if (!pending) { pending = true; requestAnimationFrame(frame); } };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    frame();
+  }
+
+  // A stuck card has a fixed height: shrink its interface fragment just enough to fit inside it.
+  function fitWork() {
+    cards.forEach((card) => {
+      const ui = card.querySelector<HTMLElement>('.ui')!;
+      const work = ui.firstElementChild as HTMLElement;
+      work.style.zoom = '';
+      if (!matchMedia(STACK).matches) return;
+      // measure from the title row down to the card's padding: an oversized fragment distorts its own grid row
+      const title = card.querySelector<HTMLElement>('h3')!, links = card.querySelector<HTMLElement>('.links')!;
+      const below = Math.max(title.offsetTop + title.offsetHeight, links.offsetTop + links.offsetHeight) + parseFloat(getComputedStyle(ui).marginTop);
+      const room = card.clientHeight - parseFloat(getComputedStyle(card).paddingBottom) - below, need = work.offsetHeight;
+      if (need > room) work.style.zoom = (room / need).toFixed(3);
+    });
+  }
+  fitWork();
+  addEventListener('resize', fitWork);
+  addEventListener('load', fitWork);
+  document.fonts?.ready.then(fitWork);
+</script>
+
+<style is:global>
+  /* cards that stick under the header and stack as you scroll; every card sticks at the same spot, so the next one covers it completely */
+  .stack { --card-h: min(680px, calc(100svh - 104px)); }
+  .project { position: relative; display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr) auto; grid-template-areas: "title title links" "tags ui ui" "desc ui ui"; grid-template-rows: auto auto 1fr; column-gap: var(--spacing-m); align-items: start; padding: 18px clamp(24px, 3vw, 44px) clamp(24px, 3vw, 44px); max-width: 1120px; margin: 0 auto 40px; border-radius: 28px; transform-origin: 50% 0; }
+  @media (min-width: 901px) and (min-height: 560px) {
+    .project { position: sticky; top: 80px; height: var(--card-h); padding-top: 20px; grid-template-rows: auto auto minmax(0, 1fr); }
+  }
+  @media (width < 901px) {
+    .project { grid-template-columns: 1fr; grid-template-areas: "title" "tags" "desc" "links" "ui"; margin-bottom: 20px; border-radius: 22px; }
+  }
+  .stack .project.f-white { background: #ffffff; }
+</style>

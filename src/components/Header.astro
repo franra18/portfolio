@@ -27,3 +27,32 @@ const pill = 'inline-flex items-center justify-center min-w-12 min-h-11 px-3.5 r
     <button class:list={[pill, 'lg:hidden']} type="button" id="menu-btn" aria-expanded="false" aria-controls="navlinks">{t['nav.menu']}</button>
   </nav>
 </header>
+
+<script>
+  const header = document.getElementById('top')!;
+  const menuBtn = document.getElementById('menu-btn')!;
+
+  // Phone menu: toggles the section links, closes on a choice, Escape or a wider window.
+  const setMenu = (open: boolean) => { header.classList.toggle('open', open); menuBtn.setAttribute('aria-expanded', String(open)); };
+  menuBtn.addEventListener('click', () => setMenu(menuBtn.getAttribute('aria-expanded') !== 'true'));
+  document.querySelectorAll('#navlinks a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+  matchMedia('(min-width: 901px)').addEventListener('change', () => setMenu(false));
+
+  // Header takes the field colour of the chapter passing under it.
+  const fields = ['f-dark', 'f-stone', 'f-white'];
+  const sel = fields.map((c) => 'main .' + c).join(',');
+  let ticking = false;
+  function paintHeader() {
+    ticking = false;
+    // the element just under the header's bottom edge decides its colour
+    const sec = document.elementFromPoint(4, header.offsetHeight + 2)?.closest(sel);
+    const f = (sec && fields.find((c) => sec.classList.contains(c))) || 'f-dark';
+    if (!header.classList.contains(f)) { header.classList.remove(...fields); header.classList.add(f); }
+  }
+  const queuePaint = () => { if (!ticking) { ticking = true; requestAnimationFrame(paintHeader); } };
+  addEventListener('scroll', queuePaint, { passive: true });
+  addEventListener('resize', queuePaint);
+  addEventListener('load', queuePaint);
+  paintHeader();
+</script>

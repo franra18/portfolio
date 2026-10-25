@@ -53,9 +53,17 @@ const person = {
 <meta name="twitter:description" content={t['meta.twDesc']}>
 <meta name="twitter:image" content={ogImage}>
 <script type="application/ld+json" set:html={JSON.stringify(person)} />
+<script is:inline>document.documentElement.classList.add('js');</script>
 <link rel="preload" href={boldFont} as="font" type="font/woff2" crossorigin>
 </head>
 <body>
 <slot />
+<script>
+  // Entrances, once per element.
+  const riseIO = new IntersectionObserver((entries) => entries.forEach((en) => {
+    if (en.isIntersecting) { en.target.classList.add('in'); riseIO.unobserve(en.target); }
+  }), { threshold: 0.12 });
+  document.querySelectorAll('.rise').forEach((el) => riseIO.observe(el));
+</script>
 </body>
 </html>
