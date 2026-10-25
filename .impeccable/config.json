@@ -1,0 +1,26 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-22T17:25:44.520Z",
+        "reason": "Claude: all 3 hits (hero, about, ticker) are false positives; sections are inset by .wrap padding clamp(16px,3vw,48px) the detector can't resolve, and the 106vw rotated ticker runs off-screen by design. Verified in browser screenshots 320-1920px"
+      },
+      {
+        "rule": "marquee",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-10-23T09:12:53.308Z",
+        "reason": "user confirmed: keep the auto-scrolling tech ribbon as designed"
+      }
+    ]
+  }
+}
