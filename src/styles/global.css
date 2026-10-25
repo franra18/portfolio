@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 /* General Sans (Fontshare, ITF Free Font License), served from this site */
-@font-face { font-family: "General Sans"; src: url("/fonts/general-sans-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: "General Sans"; src: url("/fonts/general-sans-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
-@font-face { font-family: "General Sans"; src: url("/fonts/general-sans-700.woff2") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "General Sans"; src: url("../assets/fonts/general-sans-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "General Sans"; src: url("../assets/fonts/general-sans-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "General Sans"; src: url("../assets/fonts/general-sans-700.woff2") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
 
 @theme {
   --color-*: initial;
@@ -31,6 +31,14 @@
   --spacing-m: clamp(16px, 3vw, 48px); /* page gutter */
 
   --ease-soft: cubic-bezier(.2,.7,.2,1);
+  --default-transition-timing-function: ease; /* the original never overrode the browser default */
+
+  --animate-up: up .9s var(--ease-soft) both;
+  --animate-drift: drift 18s ease-in-out infinite alternate;
+  --animate-tick: tick 38s linear infinite;
+  @keyframes up { from { opacity: 0; transform: translateY(40px); } }
+  @keyframes drift { to { transform: scale(1.06); } }
+  @keyframes tick { to { transform: translateX(-50%); } }
 
   /* the original's only two cuts (max-width 560 / 900), flipped to mobile-first */
   --breakpoint-*: initial;
@@ -38,7 +46,16 @@
   --breakpoint-lg: 901px;
 }
 
+/* --soft is set per chapter field, so the utility must read it where it is used */
+@theme inline { --color-soft: var(--soft); }
+
+/* where a stuck project card fits on screen; otherwise its bottom would be covered before it is seen */
+@custom-variant stack (@media (min-width: 901px) and (min-height: 560px));
+/* where the contact footer fits on screen; a taller one would hide its top behind the page */
+@custom-variant reveal (@media (min-width: 901px) and (min-height: 540px), (min-height: 720px));
+
 @layer base {
+  h2 { font-size: var(--text-head); font-weight: 700; line-height: .95; letter-spacing: -0.03em; }
   html { scroll-behavior: smooth; scroll-padding-top: 64px; }
   body { background: var(--color-white); color: var(--color-black); font: 400 var(--text-body)/1.45 var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   /* the original relied on browser defaults here; preflight strips them */
@@ -57,3 +74,12 @@
 .f-dark :focus-visible { outline-color: var(--color-accent-on-dark); }
 
 @utility wrap { padding-inline: var(--spacing-m); }
+
+/* entrances; content stays visible without JS */
+.js .rise { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease-soft), transform .7s var(--ease-soft); transition-delay: calc(var(--i, 0) * 80ms); }
+.js .rise.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition-duration: .01ms !important; }
+  .js .rise { opacity: 1; transform: none; }
+}

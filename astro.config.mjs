@@ -6,6 +6,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
   site: 'https://franra18.github.io',
   base: '/portfolio',
+  devToolbar: { enabled: false }, // it overlays the page and breaks pixel comparisons
   i18n: {
     locales: ['es', 'en'],
     defaultLocale: 'es',

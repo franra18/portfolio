@@ -1,0 +1,29 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { ui, languages, type Lang } from '../i18n/ui';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const other = languages.find((l) => l !== lang)!;
+
+const links = [
+  ['#experiencia', t['nav.exp']],
+  ['#proyectos', t['nav.proj']],
+  ['#sobre-mi', t['nav.about']],
+  ['#contacto', t['nav.contact']],
+];
+const pill = 'inline-flex items-center justify-center min-w-12 min-h-11 px-3.5 rounded-full border-2 border-current bg-transparent text-inherit font-semibold text-small leading-[normal] no-underline cursor-pointer transition-transform duration-150 hover:-translate-y-0.5 active:scale-95';
+---
+<header class="group top f-dark sticky top-0 z-10 flex items-center justify-between gap-4 py-3.5 px-m transition-colors duration-300" id="top">
+  <a class="font-bold no-underline text-body tracking-[-0.01em]" href="#inicio">Francisco Ramírez</a>
+  <nav class="flex items-center gap-[clamp(14px,2.4vw,32px)] text-body max-lg:bg-inherit" aria-label={t['nav.label']}>
+    <div class="flex gap-[clamp(14px,2.4vw,32px)] max-lg:hidden max-lg:group-[.open]:flex max-lg:absolute max-lg:inset-x-0 max-lg:top-full max-lg:flex-col max-lg:gap-0 max-lg:pt-1 max-lg:px-m max-lg:pb-5 max-lg:bg-inherit" id="navlinks">
+      {links.map(([href, label]) => (
+        <a href={href} class="relative no-underline py-1.5 after:absolute after:inset-x-0 after:bottom-0.5 after:h-0.5 after:bg-current after:scale-x-0 after:origin-left after:transition-transform after:duration-250 after:ease-soft hover:after:scale-x-100 max-lg:block max-lg:py-2.5 max-lg:text-lead">{label}</a>
+      ))}
+    </div>
+    <a class={pill} href={getRelativeLocaleUrl(other)} hreflang={other} lang={other} aria-label={t['nav.switchLabel']}>{t['nav.switch']}</a>
+    <button class:list={[pill, 'lg:hidden']} type="button" id="menu-btn" aria-expanded="false" aria-controls="navlinks">{t['nav.menu']}</button>
+  </nav>
+</header>

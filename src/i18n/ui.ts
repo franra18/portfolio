@@ -20,7 +20,7 @@ const es = {
   rot: ['backends con Java y Python', 'apps móviles con React Native', 'agentes de IA y servidores MCP'],
 
   'exp.h': 'Experiencia',
-  'exp.ntt': 'Ingeniero del Software en prácticas', 'exp.ntt.0': 'NTT DATA Europe &amp; Latam · Málaga', 'exp.ntt.d': 'abr – jun 2026',
+  'exp.ntt': 'Ingeniero del Software en prácticas', 'exp.ntt.0': 'NTT DATA Europe & Latam · Málaga', 'exp.ntt.d': 'abr – jun 2026',
   'exp.ntt.1': 'Script híbrido en Python con IA generativa para procesar configuraciones YAML (Proyecto EPO)',
   'exp.ntt.2': 'Dos prototipos en Spring Boot con H2 que evolucionaron a un servidor MCP con Spring AI',
   'exp.ntt.3': 'Esquemas JSON y documentos PDF generados con Spec-Driven Development',
@@ -71,7 +71,7 @@ const en: Dict = {
   rot: ['Java and Python backends', 'mobile apps with React Native', 'AI agents and MCP servers'],
 
   'exp.h': 'Experience',
-  'exp.ntt': 'Software Engineer intern', 'exp.ntt.0': 'NTT DATA Europe &amp; Latam · Málaga', 'exp.ntt.d': 'Apr – Jun 2026',
+  'exp.ntt': 'Software Engineer intern', 'exp.ntt.0': 'NTT DATA Europe & Latam · Málaga', 'exp.ntt.d': 'Apr – Jun 2026',
   'exp.ntt.1': 'Hybrid Python script with generative AI to process YAML configurations (EPO Project)',
   'exp.ntt.2': 'Two Spring Boot prototypes with H2 that evolved into an MCP server with Spring AI',
   'exp.ntt.3': 'JSON schemas and PDF documents generated with Spec-Driven Development',
