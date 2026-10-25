@@ -1,0 +1,60 @@
+---
+import { getAbsoluteLocaleUrl } from 'astro:i18n';
+import { ui, languages, asset, type Lang } from '../i18n/ui';
+import '../styles/global.css';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = ui[lang];
+const other = languages.find((l) => l !== lang)!;
+const ogImage = new URL(asset('og-image.png'), Astro.site).href;
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'Francisco Ramírez Cañadas',
+  jobTitle: t['contact.role'],
+  email: 'mailto:franciscoramirezcanadas@gmail.com',
+  address: { '@type': 'PostalAddress', addressLocality: 'Málaga', addressCountry: 'ES' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Universidad de Málaga' },
+  knowsLanguage: ['es', 'en'],
+  knowsAbout: ['Java', 'Spring Boot', 'Spring AI', 'Python', 'FastAPI', 'React Native', t['meta.genAI'], 'MCP'],
+  sameAs: ['https://github.com/franra18', 'https://www.linkedin.com/in/francisco-ramirez-canadas/'],
+};
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{t['meta.title']}</title>
+<meta name="description" content={t['meta.desc']}>
+<meta name="author" content="Francisco Ramírez Cañadas">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#141414">
+<link rel="icon" href={asset('favicon.svg')} type="image/svg+xml">
+<link rel="canonical" href={getAbsoluteLocaleUrl(lang)}>
+{languages.map((l) => <link rel="alternate" hreflang={l} href={getAbsoluteLocaleUrl(l)}>)}
+<link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl('es')}>
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Francisco Ramírez Cañadas">
+<meta property="og:url" content={getAbsoluteLocaleUrl(lang)}>
+<meta property="og:title" content={t['meta.title']}>
+<meta property="og:description" content={t['meta.ogDesc']}>
+<meta property="og:locale" content={t['meta.locale']}>
+<meta property="og:locale:alternate" content={ui[other]['meta.locale']}>
+<meta property="og:image" content={ogImage}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content={t['meta.ogAlt']}>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content={t['meta.title']}>
+<meta name="twitter:description" content={t['meta.twDesc']}>
+<meta name="twitter:image" content={ogImage}>
+<script type="application/ld+json" set:html={JSON.stringify(person)} />
+<link rel="preload" href={asset('fonts/general-sans-700.woff2')} as="font" type="font/woff2" crossorigin>
+</head>
+<body>
+<slot />
+</body>
+</html>

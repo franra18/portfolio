@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+/* General Sans (Fontshare, ITF Free Font License), served from this site */
+@font-face { font-family: "General Sans"; src: url("/fonts/general-sans-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "General Sans"; src: url("/fonts/general-sans-500.woff2") format("woff2"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "General Sans"; src: url("/fonts/general-sans-700.woff2") format("woff2"); font-weight: 600 700; font-style: normal; font-display: swap; }
+
+@theme {
+  --color-*: initial;
+  --color-white: #fafaf8;
+  --color-pure: #ffffff;
+  --color-black: #141414;
+  --color-paper: #f2f1ed;
+  --color-stone: #eeede9;
+  --color-grey: #efeeea;
+  --color-accent: #2f5bff;
+  --color-accent-hover: #1f45e0;
+  --color-accent-on-dark: #7393ff; /* lighter so small text on #141414 stays readable */
+  --color-code-hi: #e6dfb0;
+  --color-muted: #5f5f5f;
+  --color-muted-dark: #a8a8a8;
+
+  --font-sans: "General Sans", system-ui, sans-serif;
+
+  --text-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem);
+  --text-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+  --text-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem);
+  --text-title: clamp(1.4rem, 1rem + 1.6vw, 2.25rem);
+  --text-head: clamp(2.5rem, 1.6rem + 4vw, 5.5rem);
+
+  --spacing-m: clamp(16px, 3vw, 48px); /* page gutter */
+
+  --ease-soft: cubic-bezier(.2,.7,.2,1);
+
+  /* the original's only two cuts (max-width 560 / 900), flipped to mobile-first */
+  --breakpoint-*: initial;
+  --breakpoint-sm: 561px;
+  --breakpoint-lg: 901px;
+}
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body { background: var(--color-white); color: var(--color-black); font: 400 var(--text-body)/1.45 var(--font-sans); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  /* the original relied on browser defaults here; preflight strips them */
+  a { text-decoration-line: underline; }
+  :focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; }
+  ::selection { background: #cfdaff; color: var(--color-black); }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+}
+
+/* chapter fields: neutral grounds; the blue accent is kept for actions and small details. The header JS swaps these, so they stay plain classes. */
+@utility f-dark { background: var(--color-black); color: var(--color-paper); --soft: var(--color-muted-dark); }
+@utility f-stone { background: var(--color-stone); color: var(--color-black); --soft: #5a5853; }
+@utility f-white { background: var(--color-white); color: var(--color-black); --soft: var(--color-muted); }
+.f-dark :focus-visible { outline-color: var(--color-accent-on-dark); }
+
+@utility wrap { padding-inline: var(--spacing-m); }
